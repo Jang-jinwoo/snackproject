@@ -30,6 +30,26 @@ const iceCreams = [
 
 const snackContainer = document.querySelector("#snacks .card-container");
 const iceCreamContainer = document.querySelector("#ice-cream .card-container");
+const themeToggle = document.querySelector("#theme-toggle");
+
+function getInitialTheme() {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "light" || savedTheme === "dark") {
+        return savedTheme;
+    }
+
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function applyTheme(theme) {
+    const nextTheme = theme === "dark" ? "dark" : "light";
+    document.body.setAttribute("data-theme", nextTheme);
+    localStorage.setItem("theme", nextTheme);
+
+    if (themeToggle) {
+        themeToggle.textContent = nextTheme === "dark" ? "화이트 모드" : "다크 모드";
+    }
+}
 
 snacks.forEach(snack => {
     const card = document.createElement("div");
@@ -62,3 +82,12 @@ iceCreams.forEach(iceCream => {
     card.appendChild(name);
     iceCreamContainer.appendChild(card);
 });
+
+if (themeToggle) {
+    applyTheme(getInitialTheme());
+
+    themeToggle.addEventListener("click", () => {
+        const currentTheme = document.body.getAttribute("data-theme");
+        applyTheme(currentTheme === "dark" ? "light" : "dark");
+    });
+}
